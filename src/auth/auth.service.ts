@@ -1,50 +1,48 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
-import { User } from '../common/interfaces/user.interface';
-import { RegisterDto, LoginDto } from './dto';
-import { Exceptions } from 'src/common/utils/errors/exceptions.util';
+import { RegisterDto } from './dto';
+import { ConfigService } from '@nestjs/config';
+import { UsersService } from 'src/modules/users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
-    private readonly exceptions: Exceptions,
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async create({ username, email, password }: RegisterDto) {
-    try {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-      const createdUser = new this.userModel({
-        username,
-        email,
-        password: hashedPassword,
-      });
-      const savedUser = await createdUser.save();
+    const user = this.usersService.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
 
-      return { message: 'Novo usuário foi criado', newUser: savedUser };
-    } catch (error) {
-      this.exceptions.handleHttpExceptions(error);
-    }
+    return { message: 'Novo usuário foi criado', newUser: user };
   }
 
-  async login({ email, password }: LoginDto) {
-    try {
-      const user = await this.userModel.findOne({ email });
-      if (!user)
-        throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+  async validateUser({ email, password }: { email: string; password: string }) {
+    const user = await this.usersService.findOne({ email });
+    const validPassword = await bcrypt.compare(password, user.password);
 
-      const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword)
-        throw new HttpException('Senha incorreta', HttpStatus.NOT_ACCEPTABLE);
-
-      return { message: 'Usuário foi logado', user };
-    } catch (error) {
-      this.exceptions.handleHttpExceptions(error);
+    if (user && validPassword) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = user;
+      return result;
     }
+    return null;
+  }
+
+  async login({ _id, username, email }) {
+    console.log(username, email);
+    return {
+      access_token: this.jwtService.sign({ _id, username, email }),
+    };
   }
 }
