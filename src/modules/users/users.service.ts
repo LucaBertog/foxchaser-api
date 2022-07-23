@@ -34,4 +34,15 @@ export class UsersService {
       this.exceptions.handleHttpExceptions(error);
     }
   }
+
+  async findById(id: string) {
+    try {
+      const user = await this.userModel.findById(id);
+      if (!user)
+        throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+      return user;
+    } catch (error) {
+      this.exceptions.handleHttpExceptions(error);
+    }
+  }
 }

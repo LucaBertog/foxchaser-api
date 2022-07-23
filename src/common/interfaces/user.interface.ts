@@ -5,6 +5,8 @@ export interface User {
   password: string;
   profilePicture: string;
   coverPicture: string;
+  followers: string[];
+  followings: string[];
   friends: string[];
   isAdmin: boolean;
   description: string;

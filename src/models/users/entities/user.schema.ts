@@ -28,6 +28,14 @@ export const UserSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    followers: {
+      type: Array,
+      default: [],
+    },
+    followings: {
+      type: Array,
+      default: [],
+    },
     friends: {
       type: Array,
       default: [],

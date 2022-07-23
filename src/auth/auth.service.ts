@@ -18,13 +18,13 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = this.usersService.create({
+    await this.usersService.create({
       username,
       email,
       password: hashedPassword,
     });
 
-    return { message: 'Novo usuário foi criado', newUser: user };
+    return { message: 'Novo usuário foi criado' };
   }
 
   async validateUser({ email, password }: { email: string; password: string }) {
@@ -40,7 +40,6 @@ export class AuthService {
   }
 
   async login({ _id, username, email }) {
-    console.log(username, email);
     return {
       access_token: this.jwtService.sign({ _id, username, email }),
     };
