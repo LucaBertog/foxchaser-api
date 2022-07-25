@@ -6,7 +6,11 @@ import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ['http://localhost:3000', 'https://foxchaser.netlify.app'],
+      origin: [
+        'http://localhost:3000',
+        'https://foxchaser.netlify.app',
+        'https://foxchaser.vercel.app',
+      ],
     },
   });
   app.use(helmet());
