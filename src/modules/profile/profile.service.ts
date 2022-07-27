@@ -93,7 +93,6 @@ export class ProfileService {
 
   async getProfile(id: string) {
     try {
-      console.log(id);
       const user = await this.usersService.findById(id);
       if (!user)
         throw new HttpException(
