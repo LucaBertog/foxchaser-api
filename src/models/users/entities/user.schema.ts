@@ -2,11 +2,17 @@ import mongoose from 'mongoose';
 
 export const UserSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: true,
+      min: 2,
+      max: 100,
+    },
     username: {
       type: String,
       required: true,
       min: 2,
-      max: 50,
+      max: 100,
       unique: true,
     },
     email: {
@@ -36,17 +42,18 @@ export const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    friends: {
-      type: Array,
-      default: [],
-    },
     isAdmin: {
       type: Boolean,
       default: false,
     },
     description: {
       type: String,
-      max: 50,
+      max: 200,
+      default: '',
+    },
+    emblems: {
+      type: Array,
+      default: [],
     },
   },
   { timestamps: true },

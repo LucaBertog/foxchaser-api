@@ -14,6 +14,7 @@ export class UsersService {
   async create({ username, email, password }: any) {
     try {
       const createdUser = new this.userModel({
+        name: username,
         username,
         email,
         password,

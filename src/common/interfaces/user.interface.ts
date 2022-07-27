@@ -1,5 +1,6 @@
 export interface User {
   id: string;
+  name: string;
   username: string;
   email: string;
   password: string;
@@ -7,7 +8,7 @@ export interface User {
   coverPicture: string;
   followers: string[];
   followings: string[];
-  friends: string[];
   isAdmin: boolean;
   description: string;
+  emblems: string[];
 }
