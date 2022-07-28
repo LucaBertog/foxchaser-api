@@ -44,14 +44,12 @@ export class ProfileService {
         );
 
       if (files.picture) {
-        const picId = user.profilePicture.split(' ')[1];
-        this.imageKit.deleteFile(picId, (err) => {
-          if (err)
-            throw new HttpException(
-              'Erro desconhecido',
-              HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        });
+        const picId = user.profilePicture.trim().split(' ')[1];
+        if (picId)
+          this.imageKit.deleteFile(picId, (err) => {
+            if (err)
+              throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+          });
         // eslint-disable-next-line no-var
         var { fileId: pictureId, url: pictureUrl } = await this.imageKit.upload(
           {
@@ -62,14 +60,12 @@ export class ProfileService {
       }
 
       if (files.cover) {
-        const cvId = user.coverPicture.split(' ')[1];
-        this.imageKit.deleteFile(cvId, (err) => {
-          if (err)
-            throw new HttpException(
-              'Erro desconhecido',
-              HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        });
+        const cvId = user.coverPicture.trim().split(' ')[1];
+        if (cvId)
+          this.imageKit.deleteFile(cvId, (err) => {
+            if (err)
+              throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+          });
         // eslint-disable-next-line no-var
         var { fileId: coverId, url: coverUrl } = await this.imageKit.upload({
           file: files.cover[0].buffer.toString('base64'),
@@ -79,8 +75,8 @@ export class ProfileService {
 
       await user.updateOne({
         $set: {
-          profilePicture: `${pictureUrl} ${pictureId}`,
-          coverPicture: `${coverUrl} ${coverId}`,
+          profilePicture: pictureUrl ? `${pictureUrl} ${pictureId}` : undefined,
+          coverPicture: coverUrl ? `${coverUrl} ${coverId}` : undefined,
           ...EditProfile,
         },
       });
