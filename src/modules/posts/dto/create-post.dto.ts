@@ -2,11 +2,11 @@ import { IsString, IsOptional, MaxLength } from 'class-validator';
 
 export class CreatePostDto {
   @IsString()
-  @IsOptional()
-  @MaxLength(500)
-  text: string;
+  @MaxLength(200)
+  title: string;
 
   @IsString()
   @IsOptional()
-  img: string;
+  @MaxLength(500)
+  text: string;
 }

@@ -9,10 +9,14 @@ import {
   Post,
   Put,
   Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { imageFileFilter } from 'src/common/helpers/file.helper';
 import { RequestInterface } from 'src/common/interfaces';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostsService } from './posts.service';
@@ -23,12 +27,18 @@ export class PostsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
+  @UseInterceptors(FileInterceptor('image', { fileFilter: imageFileFilter }))
   @HttpCode(HttpStatus.CREATED)
   async createPost(
     @Body() createPost: CreatePostDto,
     @Request() req: RequestInterface,
+    @UploadedFile() image: Express.Multer.File,
   ) {
-    const response = await this.postsService.createPost(createPost, req.user);
+    const response = await this.postsService.createPost(
+      createPost,
+      image,
+      req.user,
+    );
     return { statusCode: HttpStatus.CREATED, ...response };
   }
 

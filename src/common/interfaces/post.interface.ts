@@ -1,7 +1,7 @@
 export interface Post {
   userId: string;
   text: string;
-  img: string;
+  image: string;
   likes: string[];
   comments: string[];
 }
