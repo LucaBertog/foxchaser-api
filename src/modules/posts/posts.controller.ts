@@ -80,4 +80,11 @@ export class PostsController {
     const response = await this.postsService.getTimeline(req.user);
     return { statusCode: HttpStatus.OK, ...response };
   }
+
+  @Get('/user/:id')
+  @HttpCode(HttpStatus.OK)
+  async getPostByUserId(@Param('id') id: string) {
+    const response = await this.postsService.getPostsByUserId(id);
+    return { statusCode: HttpStatus.OK, ...response };
+  }
 }

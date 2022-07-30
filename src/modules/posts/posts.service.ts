@@ -139,4 +139,13 @@ export class PostsService {
       this.exceptions.handleHttpExceptions(error);
     }
   }
+
+  async getPostsByUserId(id: string) {
+    try {
+      const posts = await this.postModel.find({ userId: id });
+      return { posts };
+    } catch (error) {
+      this.exceptions.handleHttpExceptions(error);
+    }
+  }
 }
