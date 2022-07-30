@@ -134,7 +134,7 @@ export class PostsService {
           return this.postModel.find({ userId: friendId });
         }),
       );
-      return userPosts.concat(...friendPosts);
+      return { posts: userPosts.concat(...friendPosts) };
     } catch (error) {
       this.exceptions.handleHttpExceptions(error);
     }
