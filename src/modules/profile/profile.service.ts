@@ -86,25 +86,4 @@ export class ProfileService {
       this.exceptions.handleHttpExceptions(error);
     }
   }
-
-  async getProfile(id: string) {
-    try {
-      const user = await this.usersService.findById(id);
-      if (!user)
-        throw new HttpException(
-          'Esse usuário não existe',
-          HttpStatus.NOT_FOUND,
-        );
-
-      return {
-        name: user.name,
-        username: user.username,
-        description: user.description,
-        profilePicture: user.profilePicture,
-        coverPicture: user.coverPicture,
-      };
-    } catch (error) {
-      this.exceptions.handleHttpExceptions(error);
-    }
-  }
 }

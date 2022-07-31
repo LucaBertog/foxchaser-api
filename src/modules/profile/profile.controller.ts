@@ -1,10 +1,8 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
-  Param,
   Put,
   Req,
   UploadedFiles,
@@ -47,13 +45,6 @@ export class ProfileController {
       EditProfile,
       files,
     );
-    return { statusCode: HttpStatus.OK, ...response };
-  }
-
-  @Get('/:id')
-  @HttpCode(HttpStatus.OK)
-  async getProfile(@Param('id') id: string) {
-    const response = await this.profileService.getProfile(id);
     return { statusCode: HttpStatus.OK, ...response };
   }
 }
