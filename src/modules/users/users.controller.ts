@@ -12,6 +12,7 @@ export class UsersController {
     return {
       statusCode: HttpStatus.OK,
       user: {
+        id: response._doc._id,
         name: response._doc.name,
         username: response._doc.username,
         profilePicture: response._doc.profilePicture,
