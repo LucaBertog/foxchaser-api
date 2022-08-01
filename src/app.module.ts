@@ -6,6 +6,8 @@ import { UsersModule } from './modules/users/users.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { ProfileModule } from './modules/profile/profile.module';
 
+console.log(process.env.MONGODB_URI);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
