@@ -14,13 +14,7 @@ console.log(process.env.MONGODB_URI);
       isGlobal: true,
       envFilePath: `${process.cwd()}/src/common/envs/.env`,
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
-        uri: process.env.MONGODB_URI || config.get<string>('MONGODB_URI'),
-      }),
-    }),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     AuthModule,
     UsersModule,
     PostsModule,
