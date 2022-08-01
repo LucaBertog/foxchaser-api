@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { PayloadJwt } from 'src/common/interfaces';
 import { User } from '../../common/interfaces/user.interface';
 import { Exceptions } from '../../common/utils/errors/exceptions.util';
 
@@ -44,6 +45,78 @@ export class UsersService {
       return user;
     } catch (error) {
       this.exceptions.handleHttpExceptions(error);
+    }
+  }
+
+  async followUser(id: string, currentUserPayload: PayloadJwt) {
+    if (id !== currentUserPayload.id) {
+      try {
+        const user = await this.userModel.findById(id);
+        const currentUser = await this.userModel.findById(
+          currentUserPayload.id,
+        );
+        if (!user || !currentUser)
+          throw new HttpException(
+            'Um dos usuários não existe!',
+            HttpStatus.NOT_FOUND,
+          );
+
+        if (!user.followers.includes(currentUserPayload.id)) {
+          await user.updateOne({
+            $push: { followers: currentUserPayload.id },
+          });
+          await currentUser.updateOne({ $push: { followings: id } });
+          return { message: 'Usuário seguido com sucesso!' };
+        } else {
+          throw new HttpException(
+            'Você já segue esse usuário!',
+            HttpStatus.FORBIDDEN,
+          );
+        }
+      } catch (error) {
+        this.exceptions.handleHttpExceptions(error);
+      }
+    } else {
+      throw new HttpException(
+        'Você não pode seguir você mesmo!',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+  }
+
+  async unfollowUser(id: string, currentUserPayload: PayloadJwt) {
+    if (id !== currentUserPayload.id) {
+      try {
+        const user = await this.userModel.findById(id);
+        const currentUser = await this.userModel.findById(
+          currentUserPayload.id,
+        );
+        if (!user || !currentUser)
+          throw new HttpException(
+            'Um dos usuários não existe!',
+            HttpStatus.NOT_FOUND,
+          );
+
+        if (user.followers.includes(currentUserPayload.id)) {
+          await user.updateOne({
+            $pull: { followers: currentUserPayload.id },
+          });
+          await currentUser.updateOne({ $pull: { followings: id } });
+          return { message: 'Você parou de seguir esse usuário com sucesso!' };
+        } else {
+          throw new HttpException(
+            'Você já não segue esse usuário!',
+            HttpStatus.FORBIDDEN,
+          );
+        }
+      } catch (error) {
+        this.exceptions.handleHttpExceptions(error);
+      }
+    } else {
+      throw new HttpException(
+        'Você não pode parar de seguir você mesmo!',
+        HttpStatus.FORBIDDEN,
+      );
     }
   }
 }

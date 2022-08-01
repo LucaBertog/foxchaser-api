@@ -1,4 +1,15 @@
-import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RequestInterfaceFile } from 'src/common/interfaces';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -23,5 +34,24 @@ export class UsersController {
         emblems: response._doc.emblems,
       },
     };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id/follow')
+  @HttpCode(HttpStatus.OK)
+  async followUser(@Param('id') id: string, @Req() req: RequestInterfaceFile) {
+    const response = await this.usersService.followUser(id, req.user);
+    return { statusCode: HttpStatus.OK, ...response };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id/unfollow')
+  @HttpCode(HttpStatus.OK)
+  async unfollowUser(
+    @Param('id') id: string,
+    @Req() req: RequestInterfaceFile,
+  ) {
+    const response = await this.usersService.unfollowUser(id, req.user);
+    return { statusCode: HttpStatus.OK, ...response };
   }
 }
