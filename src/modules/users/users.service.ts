@@ -48,6 +48,17 @@ export class UsersService {
     }
   }
 
+  async findByUsername(username: string) {
+    try {
+      const user = await this.userModel.findOne({ username });
+      if (!user)
+        throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+      return user;
+    } catch (error) {
+      this.exceptions.handleHttpExceptions(error);
+    }
+  }
+
   async followUser(id: string, currentUserPayload: PayloadJwt) {
     if (id !== currentUserPayload.id) {
       try {

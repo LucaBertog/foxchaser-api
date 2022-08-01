@@ -16,10 +16,30 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('/:id')
+  @Get('/id/:id')
   @HttpCode(HttpStatus.OK)
   async getUserById(@Param('id') id: string) {
     const response: any = await this.usersService.findById(id);
+    return {
+      statusCode: HttpStatus.OK,
+      user: {
+        id: response._doc._id,
+        name: response._doc.name,
+        username: response._doc.username,
+        profilePicture: response._doc.profilePicture,
+        coverPicture: response._doc.coverPicture,
+        followers: response._doc.followers,
+        followings: response._doc.followings,
+        description: response._doc.description,
+        emblems: response._doc.emblems,
+      },
+    };
+  }
+
+  @Get('/:username')
+  @HttpCode(HttpStatus.OK)
+  async getUserByUsername(@Param('username') username: string) {
+    const response: any = await this.usersService.findByUsername(username);
     return {
       statusCode: HttpStatus.OK,
       user: {
