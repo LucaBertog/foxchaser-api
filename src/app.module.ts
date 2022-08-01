@@ -16,7 +16,7 @@ import { ProfileModule } from './modules/profile/profile.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        uri: config.get<string>('MONGODB_URI'),
+        uri: process.env.MONGODB_URI || config.get<string>('MONGODB_URI'),
       }),
     }),
     AuthModule,
