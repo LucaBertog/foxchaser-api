@@ -138,7 +138,19 @@ export class PostsService {
             .sort({ createdAt: -1 });
         }),
       );
-      return { posts: userPosts.concat(...friendPosts) };
+      return {
+        posts: userPosts
+          .concat(...friendPosts)
+          .sort((postA: any, postB: any) => {
+            const datePostA = new Date(postA.createdAt).getTime();
+            const datePostB = new Date(postB.createdAt).getTime();
+
+            if (datePostA > datePostB) {
+              return -1;
+            }
+            return 1;
+          }),
+      };
     } catch (error) {
       this.exceptions.handleHttpExceptions(error);
     }
