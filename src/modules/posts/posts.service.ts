@@ -128,10 +128,14 @@ export class PostsService {
   async getTimeline(user: PayloadJwt) {
     try {
       const currentUser = await this.usersService.findById(user.id);
-      const userPosts = await this.postModel.find({ userId: currentUser._id });
+      const userPosts = await this.postModel
+        .find({ userId: currentUser._id })
+        .sort({ createdAt: -1 });
       const friendPosts = await Promise.all(
         currentUser.followings.map((friendId: string) => {
-          return this.postModel.find({ userId: friendId });
+          return this.postModel
+            .find({ userId: friendId })
+            .sort({ createdAt: -1 });
         }),
       );
       return { posts: userPosts.concat(...friendPosts) };
@@ -142,7 +146,9 @@ export class PostsService {
 
   async getPostsByUserId(id: string) {
     try {
-      const posts = await this.postModel.find({ userId: id });
+      const posts = await this.postModel
+        .find({ userId: id })
+        .sort({ createdAt: -1 });
       return { posts };
     } catch (error) {
       this.exceptions.handleHttpExceptions(error);
