@@ -166,4 +166,12 @@ export class PostsService {
       this.exceptions.handleHttpExceptions(error);
     }
   }
+
+  async getAllPosts() {
+    try {
+      return this.postModel.find();
+    } catch (error) {
+      this.exceptions.handleHttpExceptions(error);
+    }
+  }
 }

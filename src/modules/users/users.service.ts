@@ -130,4 +130,12 @@ export class UsersService {
       );
     }
   }
+
+  async getAllUsers() {
+    try {
+      return this.userModel.find();
+    } catch (error) {
+      this.exceptions.handleHttpExceptions(error);
+    }
+  }
 }
