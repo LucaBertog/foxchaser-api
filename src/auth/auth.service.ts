@@ -39,9 +39,9 @@ export class AuthService {
     return null;
   }
 
-  async login({ _id, username, email }) {
+  async login({ _id, username, email, isAdmin }) {
     return {
-      access_token: this.jwtService.sign({ _id, username, email }),
+      access_token: this.jwtService.sign({ _id, username, email, isAdmin }),
     };
   }
 }
