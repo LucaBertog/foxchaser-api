@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { FILE_SIZE } from 'src/common/constants';
 import { RequestInterfaceFile } from 'src/common/interfaces';
 import { Exceptions } from 'src/common/utils/errors/exceptions.util';
 import { UsersService } from '../users/users.service';
@@ -24,24 +25,30 @@ export class ProfileService {
     });
   }
 
+  profileValidations(req, files, user) {
+    if (
+      (files.picture.length > 0 && files.picture[0].size > FILE_SIZE) ||
+      (files.cover.length > 0 && files.cover[0].size > FILE_SIZE)
+    )
+      throw new HttpException(
+        'Arquivo grande demais',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+
+    if (req.fileValidationError)
+      throw new HttpException(req.fileValidationError, HttpStatus.BAD_REQUEST);
+
+    if (!user)
+      throw new HttpException('Esse usuário não existe', HttpStatus.NOT_FOUND);
+  }
+
   async editProfile(
     req: RequestInterfaceFile,
     EditProfile: EditProfileDto,
     files: FilesDto,
   ) {
     try {
-      if (req.fileValidationError)
-        throw new HttpException(
-          req.fileValidationError,
-          HttpStatus.BAD_REQUEST,
-        );
-
       const user = await this.usersService.findById(req.user.id);
-      if (!user)
-        throw new HttpException(
-          'Esse usuário não existe',
-          HttpStatus.NOT_FOUND,
-        );
 
       if (files.picture) {
         const picId = user.profilePicture.trim().split(' ')[1];
@@ -83,6 +90,7 @@ export class ProfileService {
 
       return { message: 'Perfil atualizado' };
     } catch (error) {
+      console.log(error);
       this.exceptions.handleHttpExceptions(error);
     }
   }
