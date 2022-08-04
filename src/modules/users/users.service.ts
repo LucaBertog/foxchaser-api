@@ -138,4 +138,22 @@ export class UsersService {
       this.exceptions.handleHttpExceptions(error);
     }
   }
+
+  async searchUsers(search: string) {
+    try {
+      const searchRegex = new RegExp(`${search}`, 'i');
+      const result = await this.userModel.find({
+        $or: [{ name: searchRegex }, { username: searchRegex }],
+      });
+      const personalizedResult = result.map((user) => ({
+        id: user._id,
+        name: user.name,
+        username: user.username,
+        profilePicture: user.profilePicture,
+      }));
+      return personalizedResult;
+    } catch (error) {
+      this.exceptions.handleHttpExceptions(error);
+    }
+  }
 }
