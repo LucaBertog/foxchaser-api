@@ -33,8 +33,8 @@ export class ChatGateway
     private readonly exceptions: Exceptions,
   ) {}
 
-  afterInit(server: Server) {
-    this.logger.log(`Initialized ${server._connectTimeout}`);
+  afterInit() {
+    this.logger.log(`Initialized`);
   }
 
   handleConnection(client: Socket) {
@@ -73,11 +73,11 @@ export class ChatGateway
       text: payload.text,
     });
 
-    const newMessages = await this.messagesService.getMessagesByUserIds({
+    const { messages } = await this.messagesService.getMessagesByUserIds({
       friendId: payload.receiver,
       userId: payload.sender,
     });
-    this.server.emit('reloadedMessages', { newMessages });
+    this.server.emit('reloadedMessages', { messages });
   }
 
   @SubscribeMessage('reloadPrivateMessages')
@@ -87,8 +87,7 @@ export class ChatGateway
         userId: payload.userId,
         friendId: payload.friendId,
       });
-
-      console.log(messages);
+      this.server.emit('reloadedMessages', { messages });
     } catch (error) {
       this.exceptions.handleHttpExceptions(error);
     }
