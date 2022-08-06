@@ -156,4 +156,32 @@ export class UsersService {
       this.exceptions.handleHttpExceptions(error);
     }
   }
+
+  async getAllFriends(id: string) {
+    try {
+      const friends = [];
+      const allUsers = await this.getAllUsers();
+
+      allUsers.forEach(
+        (user) =>
+          user.followers.includes(id) &&
+          user.followings.includes(id) &&
+          friends.push({
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            profilePicture: user.profilePicture,
+            coverPicture: user.coverPicture,
+            followers: user.followers,
+            followings: user.followings,
+            description: user.description,
+            emblems: user.emblems,
+          }),
+      );
+
+      return { friends };
+    } catch (error) {
+      this.exceptions.handleHttpExceptions(error);
+    }
+  }
 }

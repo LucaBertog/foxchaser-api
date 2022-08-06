@@ -44,7 +44,7 @@ export class ChatGateway
   handleDisconnect(client: Socket) {
     this.removeUser(client.id);
     this.logger.log(`Client disconnected: ${client.id}`);
-    this.server.emit('getUsers', this.users);
+    this.server.emit('onlineUsers', this.users);
   }
 
   addUser({ userId, socketId, username }: UserSocket) {
@@ -62,12 +62,7 @@ export class ChatGateway
       socketId: client.id,
       ...payload,
     });
-    client.data = {
-      socketId: client.id,
-      ...payload,
-    };
-    console.log(this.users);
-    this.server.emit('getUsers', this.users);
+    this.server.emit('onlineUsers', this.users);
   }
 
   @SubscribeMessage('newPrivateMessage')

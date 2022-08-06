@@ -74,4 +74,12 @@ export class UsersController {
     const response = await this.usersService.unfollowUser(id, req.user);
     return { statusCode: HttpStatus.OK, ...response };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:id/friends')
+  @HttpCode(HttpStatus.OK)
+  async getAllFriends(@Param('id') id: string) {
+    const response = await this.usersService.getAllFriends(id);
+    return { statusCode: HttpStatus.OK, ...response };
+  }
 }
