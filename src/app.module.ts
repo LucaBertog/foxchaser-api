@@ -7,7 +7,8 @@ import { PostsModule } from './modules/posts/posts.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { SearchModule } from './modules/search/search.module';
-import { ChatGateway } from './chat.gateway';
+import { MessagesModule } from './modules/messages/messages.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { ChatGateway } from './chat.gateway';
     ProfileModule,
     AdminModule,
     SearchModule,
+    MessagesModule,
+    ChatModule,
   ],
-  providers: [ChatGateway],
 })
 export class AppModule {}

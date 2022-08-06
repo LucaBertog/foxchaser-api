@@ -8,7 +8,9 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { UserSocket } from './common/interfaces';
+import { Exceptions } from 'src/common/utils/errors/exceptions.util';
+import { UserSocket } from '../../common/interfaces';
+import { MessagesService } from '../messages/messages.service';
 
 @WebSocketGateway({
   cors: {
@@ -25,6 +27,11 @@ export class ChatGateway
   @WebSocketServer() server: Server;
   private readonly logger: Logger = new Logger('AppGateway');
   private users: UserSocket[] = [];
+
+  constructor(
+    private readonly messagesService: MessagesService,
+    private readonly exceptions: Exceptions,
+  ) {}
 
   afterInit(server: Server) {
     this.logger.log(`Initialized ${server._connectTimeout}`);
@@ -61,5 +68,34 @@ export class ChatGateway
     };
     console.log(this.users);
     this.server.emit('getUsers', this.users);
+  }
+
+  @SubscribeMessage('newPrivateMessage')
+  async handleNewPrivateMessage(client: Socket, payload: any) {
+    await this.messagesService.newMessage({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      text: payload.text,
+    });
+
+    const newMessages = await this.messagesService.getMessagesByUserIds({
+      friendId: payload.receiver,
+      userId: payload.sender,
+    });
+    this.server.emit('reloadedMessages', { newMessages });
+  }
+
+  @SubscribeMessage('reloadPrivateMessages')
+  async handleReloadPrivateMessages(client: Socket, payload: any) {
+    try {
+      const { messages } = await this.messagesService.getMessagesByUserIds({
+        userId: payload.userId,
+        friendId: payload.friendId,
+      });
+
+      console.log(messages);
+    } catch (error) {
+      this.exceptions.handleHttpExceptions(error);
+    }
   }
 }
