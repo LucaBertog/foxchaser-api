@@ -26,12 +26,19 @@ export class ChatGateway
 {
   @WebSocketServer() server: Server;
   private readonly logger: Logger = new Logger('AppGateway');
-  private users: UserSocket[] = [];
 
   constructor(
     private readonly messagesService: MessagesService,
     private readonly exceptions: Exceptions,
   ) {}
+
+  async getOnlineUsers() {
+    const sockets = await this.server.fetchSockets();
+    const users = sockets
+      .map((socket) => Object.keys(socket.data).length !== 0 && socket.data)
+      .filter((data) => data);
+    this.server.emit('onlineUsers', users);
+  }
 
   afterInit() {
     this.logger.log(`Initialized`);
@@ -42,27 +49,17 @@ export class ChatGateway
   }
 
   handleDisconnect(client: Socket) {
-    this.removeUser(client.id);
     this.logger.log(`Client disconnected: ${client.id}`);
-    this.server.emit('onlineUsers', this.users);
-  }
-
-  addUser({ userId, socketId, username }: UserSocket) {
-    !this.users.some((user) => user.userId === userId) &&
-      this.users.push({ userId, socketId, username });
-  }
-
-  removeUser(socketId: string) {
-    this.users = this.users.filter((user) => user.socketId !== socketId);
+    this.getOnlineUsers();
   }
 
   @SubscribeMessage('newUser')
-  handleNewUser(client: Socket, payload: UserSocket): void {
-    this.addUser({
+  handleNewUser(client: Socket, payload: UserSocket) {
+    client.data = {
+      userId: payload.userId,
       socketId: client.id,
-      ...payload,
-    });
-    this.server.emit('onlineUsers', this.users);
+    };
+    this.getOnlineUsers();
   }
 
   @SubscribeMessage('newPrivateMessage')
@@ -77,7 +74,16 @@ export class ChatGateway
       friendId: payload.receiver,
       userId: payload.sender,
     });
-    this.server.emit('reloadedMessages', { messages });
+
+    const sockets = await this.server.fetchSockets();
+    sockets.forEach((socket) => {
+      if (socket.data.userId === payload.receiver) {
+        return this.server
+          .to(socket.id)
+          .emit('newMessage', { messages, sender: payload.sender });
+      }
+    });
+    return client.emit('reloadedMessages', { messages });
   }
 
   @SubscribeMessage('reloadPrivateMessages')
@@ -87,7 +93,7 @@ export class ChatGateway
         userId: payload.userId,
         friendId: payload.friendId,
       });
-      this.server.emit('reloadedMessages', { messages });
+      client.emit('reloadedMessages', { messages });
     } catch (error) {
       this.exceptions.handleHttpExceptions(error);
     }
