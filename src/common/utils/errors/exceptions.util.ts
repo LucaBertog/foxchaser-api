@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { mongodbError } from 'src/common/errors/mongodb.errors';
+import { mongodbError } from '../../errors/mongodb.errors';
 
 @Injectable()
 export class Exceptions {

@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FILE_SIZE } from 'src/common/constants';
-import { RequestInterfaceFile } from 'src/common/interfaces';
-import { Exceptions } from 'src/common/utils/errors/exceptions.util';
+import { FILE_SIZE } from '../../common/constants';
+import { RequestInterfaceFile } from '../../common/interfaces';
+import { Exceptions } from '../../common/utils/errors/exceptions.util';
 import { UsersService } from '../users/users.service';
 import { EditProfileDto } from './dto/edit-profile.dto';
 import { FilesDto } from './dto/files.dto';

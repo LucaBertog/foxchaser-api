@@ -12,9 +12,9 @@ import {
 
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { imageFileFilter } from 'src/common/helpers/file.helper';
-import { RequestInterfaceFile } from 'src/common/interfaces';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { imageFileFilter } from '../../common/helpers/file.helper';
+import { RequestInterfaceFile } from '../../common/interfaces';
 import { EditProfileDto } from './dto/edit-profile.dto';
 import { FilesDto } from './dto/files.dto';
 import { ProfileService } from './profile.service';

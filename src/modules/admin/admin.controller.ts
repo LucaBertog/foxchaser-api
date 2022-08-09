@@ -7,9 +7,9 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RequestInterface } from 'src/common/interfaces';
-import { Exceptions } from 'src/common/utils/errors/exceptions.util';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { RequestInterface } from '../../common/interfaces';
+import { Exceptions } from '../../common/utils/errors/exceptions.util';
 import { PostsService } from '../posts/posts.service';
 import { UsersService } from '../users/users.service';
 

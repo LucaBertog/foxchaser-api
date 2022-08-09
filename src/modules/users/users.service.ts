@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PayloadJwt } from 'src/common/interfaces';
+import { PayloadJwt } from '../../common/interfaces';
 import { User } from '../../common/interfaces/user.interface';
 import { Exceptions } from '../../common/utils/errors/exceptions.util';
 

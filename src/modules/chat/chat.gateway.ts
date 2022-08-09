@@ -8,7 +8,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Exceptions } from 'src/common/utils/errors/exceptions.util';
+import { Exceptions } from '../../common/utils/errors/exceptions.util';
 import { UserSocket } from '../../common/interfaces';
 import { MessagesService } from '../messages/messages.service';
 

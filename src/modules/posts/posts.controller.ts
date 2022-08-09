@@ -15,9 +15,9 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { imageFileFilter } from 'src/common/helpers/file.helper';
-import { RequestInterface } from 'src/common/interfaces';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { imageFileFilter } from '../../common/helpers/file.helper';
+import { RequestInterface } from '../../common/interfaces';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostsService } from './posts.service';
 

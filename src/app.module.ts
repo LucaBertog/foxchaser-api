@@ -9,6 +9,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { SearchModule } from './modules/search/search.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { NewsScrapingModule } from './modules/news-scraping/news-scraping.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ChatModule } from './modules/chat/chat.module';
     SearchModule,
     MessagesModule,
     ChatModule,
+    NewsScrapingModule,
   ],
 })
 export class AppModule {}

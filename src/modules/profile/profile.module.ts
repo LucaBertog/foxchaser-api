@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { Exceptions } from 'src/common/utils/errors/exceptions.util';
+import { Exceptions } from '../../common/utils/errors/exceptions.util';
 import { UsersModule } from '../users/users.module';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';

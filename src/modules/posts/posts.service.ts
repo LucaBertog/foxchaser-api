@@ -5,8 +5,8 @@ import { InjectModel } from '@nestjs/mongoose';
 const ImageKit = require('imagekit');
 import { Model } from 'mongoose';
 
-import { PayloadJwt, Post } from 'src/common/interfaces';
-import { Exceptions } from 'src/common/utils/errors/exceptions.util';
+import { PayloadJwt, Post } from '../../common/interfaces';
+import { Exceptions } from '../../common/utils/errors/exceptions.util';
 import { UsersService } from '../users/users.service';
 import { CreatePostDto } from './dto/create-post.dto';
 
